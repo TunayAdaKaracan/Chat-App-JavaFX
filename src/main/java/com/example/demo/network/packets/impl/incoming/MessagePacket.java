@@ -1,0 +1,44 @@
+package com.example.demo.network.packets.impl.incoming;
+
+import com.example.demo.network.packets.Packet;
+
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+
+// ID 0
+public class MessagePacket implements Packet {
+    private String username;
+    private String messageContent;
+
+    public MessagePacket setUsername(String name){
+        this.username = name;
+        return this;
+    }
+
+    public MessagePacket setMessageContent(String message){
+        this.messageContent = message;
+        return this;
+    }
+
+    @Override
+    public void write(DataOutputStream stream) {
+        try {
+            stream.writeInt(0);
+            stream.writeUTF(username);
+            stream.writeUTF(messageContent);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void read(DataInputStream stream) {
+        try {
+            this.username = stream.readUTF();
+            this.messageContent = stream.readUTF();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+}

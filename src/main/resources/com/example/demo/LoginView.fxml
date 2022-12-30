@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="416.0" prefWidth="308.0" style="-fx-background-color: linear-gradient(to top, #2d388a, #00aeef);&#10;-fx-border-color: black;&#10;-fx-border-width: 2;" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/2.2" fx:controller="com.example.demo.pages.login.LoginWindowController">
+  <children>
+    <Text fontSmoothingType="LCD" layoutX="75.0" layoutY="94.0" scaleX="1.0" scaleY="1.0" scaleZ="1.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Login">
+      <font>
+        <Font name="Agency FB" size="96.0" />
+      </font>
+    </Text>
+    <TextField id="username_inp" fx:id="usernameInp" layoutX="54.0" layoutY="177.0" onMouseClicked="#usernameClick" prefWidth="200.0" style="" />
+    <Button fx:id="button" layoutX="54.0" layoutY="321.0" mnemonicParsing="false" onAction="#login" text="Login" />
+    <Hyperlink layoutX="197.0" layoutY="320.0" text="" />
+    <Text fill="WHITE" fontSmoothingType="LCD" layoutX="134.0" layoutY="327.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Don't have an account?" textAlignment="LEFT">
+      <font>
+        <Font size="12.0" />
+      </font>
+    </Text>
+    <Hyperlink id="hyperlink" layoutX="130.0" layoutY="323.0" onAction="#hyperlink" prefWidth="83.0" text="Register now!" textFill="#33ffe7" underline="true" wrapText="false" />
+    <PasswordField fx:id="passwordInp" layoutX="54.0" layoutY="254.0" onMouseClicked="#passwordClick" prefWidth="200.0" />
+    <Text fill="WHITE" fontSmoothingType="LCD" layoutX="54.0" layoutY="167.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username">
+      <font>
+        <Font size="16.0" fx:id="x1" />
+      </font>
+    </Text>
+    <Text fill="WHITE" font="$x1" fontSmoothingType="LCD" layoutX="54.0" layoutY="245.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password" />
+    <Text fx:id="error" fill="#cc0000" font="$x1" fontSmoothingType="LCD" layoutX="57.0" layoutY="301.0" strokeType="OUTSIDE" strokeWidth="0.0" text="" />
+  </children>
+</AnchorPane>
