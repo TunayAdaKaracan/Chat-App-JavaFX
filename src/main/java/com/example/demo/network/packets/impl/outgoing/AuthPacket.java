@@ -4,6 +4,7 @@ import com.example.demo.network.packets.Packet;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.IOException;
 
 // ID 1
 public class AuthPacket implements Packet {
@@ -22,7 +23,13 @@ public class AuthPacket implements Packet {
 
     @Override
     public void write(DataOutputStream stream) {
-
+        try {
+            stream.writeInt(1);
+            stream.writeUTF(username);
+            stream.writeUTF(password);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

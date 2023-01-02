@@ -1,9 +1,15 @@
 package com.example.demo.pages.register;
 
 import com.example.demo.Launcher;
+import com.example.demo.network.events.EventHandler;
+import com.example.demo.network.internal.ConnectionState;
+import com.example.demo.network.packets.impl.incoming.RegistryPacket;
+import com.example.demo.network.packets.impl.incoming.ServerResponse;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -33,6 +39,9 @@ public class RegisterWindowController implements Initializable {
     private Text error;
 
     @FXML
+    private Button button;
+
+    @FXML
     public void register(ActionEvent e){
         boolean hasEmptyField = false;
 
@@ -58,13 +67,17 @@ public class RegisterWindowController implements Initializable {
         }
 
         if(!passwordInp.getText().equals(passwordConfirmInp.getText())){
-            error.setText("Passwords are not matched");
+            error.setText("Passwords are not matching");
             return;
         }
 
-        // TODO: Actual register
+        button.setDisable(true);
 
-        Launcher.switchToScene("LoginView").show();
+        new RegistryPacket()
+                .setUsername(usernameInp.getText())
+                .setEmail(emailInp.getText())
+                .setPassword(passwordInp.getText())
+                .send();
     }
 
     @FXML
@@ -124,6 +137,25 @@ public class RegisterWindowController implements Initializable {
         passwordConfirmInp.focusedProperty().addListener((observableValue, oldVal, newVal) -> {
             if(!newVal && passwordConfirmInp.getText().isEmpty()){
                 passwordConfirmInp.setStyle(ERROR_STYLE);
+            }
+        });
+
+        EventHandler.setConnectionStateEvent(state -> {
+            if(state == ConnectionState.CONNECTING){
+                error.setText("Still connecting to server");
+                button.setDisable(true);
+            } else if(state == ConnectionState.CONNECTED){
+                error.setText("");
+                button.setDisable(false);
+            }
+        });
+        EventHandler.setPacketCallback(ServerResponse.class, packet -> {
+            ServerResponse response = (ServerResponse) packet;
+            if(response.getCode() == ServerResponse.StatusCode.SUCCESS){
+                Platform.runLater(() -> Launcher.switchToScene("LoginView").show());
+            } else if(response.getCode() == ServerResponse.StatusCode.FAILURE){
+                error.setText(response.getText());
+                button.setDisable(false);
             }
         });
     }

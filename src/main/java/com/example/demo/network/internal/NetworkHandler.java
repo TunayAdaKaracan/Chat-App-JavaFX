@@ -3,6 +3,7 @@ package com.example.demo.network.internal;
 import com.example.demo.network.events.EventHandler;
 import com.example.demo.network.packets.Packet;
 import com.example.demo.network.packets.PacketFactory;
+import javafx.application.Platform;
 
 import java.io.*;
 import java.net.Socket;
@@ -27,7 +28,6 @@ public class NetworkHandler implements Runnable{
             throw new RuntimeException("You can't create 2 NetworkHandler instance");
         }
 
-
         INSTANCE = this;
         this.host = host;
         this.port = port;
@@ -51,6 +51,7 @@ public class NetworkHandler implements Runnable{
         }
 
         packetFactory = new PacketFactory();
+
         try {
             packetSender = new PacketSender(socket.getOutputStream());
         } catch (IOException e) {
@@ -63,26 +64,36 @@ public class NetworkHandler implements Runnable{
 
     @Override
     public void run() {
-        connectToServer();
+        while(!shutdown){
+            connectToServer();
 
-        System.out.println("Connection has been established");
+            System.out.println("Connection has been established");
 
-        DataInputStream dataInputStream = null;
-        try {
-            dataInputStream = new DataInputStream(socket.getInputStream());
-        } catch (IOException e) {
-            stop();
-        }
-        while(!shutdown && dataInputStream != null){
+            DataInputStream dataInputStream = null;
             try {
-                Packet packet = packetFactory.fromId(dataInputStream.readInt());
-                packet.read(dataInputStream);
-                Consumer<Packet> consumer = EventHandler.getPacketCallback(packet.getClass());
-                if(consumer != null){
-                    consumer.accept(packet);
-                }
+                dataInputStream = new DataInputStream(socket.getInputStream());
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                stop();
+            }
+            while(!shutdown && dataInputStream != null){
+                try {
+                    Packet packet = packetFactory.fromId(dataInputStream.readInt());
+                    packet.read(dataInputStream);
+
+                    Consumer<Packet> consumer = EventHandler.getPacketCallback(packet.getClass());
+                    if(consumer != null){
+                        consumer.accept(packet);
+                    }
+                } catch (IOException e) {
+                    packetSender.stop();
+                    try {
+                        socket.close();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                    socket = null;
+                    break;
+                }
             }
         }
     }

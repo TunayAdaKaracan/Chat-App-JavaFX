@@ -15,7 +15,7 @@
       </font>
     </Text>
     <TextField id="username_inp" fx:id="usernameInp" layoutX="54.0" layoutY="151.0" onMouseClicked="#usernameClick" prefWidth="200.0" />
-    <Button layoutX="54.0" layoutY="369.0" mnemonicParsing="false" onAction="#register" text="Register" />
+    <Button fx:id="button" layoutX="54.0" layoutY="369.0" mnemonicParsing="false" onAction="#register" text="Register" />
     <Hyperlink layoutX="197.0" layoutY="361.0" text="" />
     <Text fill="WHITE" fontSmoothingType="LCD" layoutX="134.0" layoutY="374.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Already have an account?" textAlignment="LEFT">
       <font>

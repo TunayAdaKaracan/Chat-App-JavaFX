@@ -8,6 +8,7 @@ import com.example.demo.network.packets.Packet;
 import com.example.demo.network.packets.impl.incoming.MessagePacket;
 import com.example.demo.network.packets.impl.incoming.ServerResponse;
 import com.example.demo.network.packets.impl.outgoing.AuthPacket;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -52,17 +53,11 @@ public class LoginWindowController implements Initializable {
             return;
         }
 
-        if(!usernameInp.getText().equals("kutup") && !passwordInp.getText().equals("12345")){
-            error.setText("Account is not valid.");
-            return;
-        }
-
+        button.setDisable(true);
         new AuthPacket()
                 .setUsername(usernameInp.getText())
                 .setPassword(passwordInp.getText())
                 .send();
-
-        button.setDisable(true);
     }
 
     @FXML
@@ -103,7 +98,6 @@ public class LoginWindowController implements Initializable {
             if(state == ConnectionState.CONNECTING){
                 error.setText("Still connecting to server");
                 button.setDisable(true);
-
             } else if(state == ConnectionState.CONNECTED){
                 error.setText("");
                 button.setDisable(false);
@@ -114,7 +108,7 @@ public class LoginWindowController implements Initializable {
             ServerResponse response = (ServerResponse) packet;
 
             if(response.getCode() == ServerResponse.StatusCode.SUCCESS){
-                Launcher.switchToScene("deneme");
+                Platform.runLater(() -> Launcher.switchToScene("deneme"));
             } else if(response.getCode() == ServerResponse.StatusCode.FAILURE) {
                 error.setText(response.getText());
                 button.setDisable(false);
