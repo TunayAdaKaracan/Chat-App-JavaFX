@@ -32,13 +32,11 @@ public class PacketSender implements Runnable{
     public void run() {
         while(!shutdown){
             if(packetsToSend.size() != 0){
-                System.out.println("Preparing to sending packet.");
                 try {
                     Packet packet = packetsToSend.remove(0);
                     DataOutputStream dos = new DataOutputStream(out);
                     packet.write(dos);
                     dos.flush();
-                    System.out.println("Packet sended");
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

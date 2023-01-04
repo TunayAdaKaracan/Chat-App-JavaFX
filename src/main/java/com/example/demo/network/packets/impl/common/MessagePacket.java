@@ -1,4 +1,4 @@
-package com.example.demo.network.packets.impl.incoming;
+package com.example.demo.network.packets.impl.common;
 
 import com.example.demo.network.packets.Packet;
 
@@ -19,6 +19,14 @@ public class MessagePacket implements Packet {
     public MessagePacket setMessageContent(String message){
         this.messageContent = message;
         return this;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getMessageContent() {
+        return messageContent;
     }
 
     @Override

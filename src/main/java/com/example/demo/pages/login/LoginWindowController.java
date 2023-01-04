@@ -3,9 +3,7 @@ package com.example.demo.pages.login;
 import com.example.demo.Launcher;
 import com.example.demo.network.events.EventHandler;
 import com.example.demo.network.internal.ConnectionState;
-import com.example.demo.network.internal.NetworkHandler;
-import com.example.demo.network.packets.Packet;
-import com.example.demo.network.packets.impl.incoming.MessagePacket;
+import com.example.demo.network.internal.User;
 import com.example.demo.network.packets.impl.incoming.ServerResponse;
 import com.example.demo.network.packets.impl.outgoing.AuthPacket;
 import javafx.application.Platform;
@@ -36,6 +34,8 @@ public class LoginWindowController implements Initializable {
     @FXML
     private Button button;
 
+    private String sentUsername;
+
     @FXML
     public void login(ActionEvent e){
         boolean hasEmptyField = false;
@@ -54,6 +54,7 @@ public class LoginWindowController implements Initializable {
         }
 
         button.setDisable(true);
+        sentUsername = usernameInp.getText();
         new AuthPacket()
                 .setUsername(usernameInp.getText())
                 .setPassword(passwordInp.getText())
@@ -83,6 +84,8 @@ public class LoginWindowController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        sentUsername = "";
+
         usernameInp.focusedProperty().addListener((observableValue, oldVal, newVal) -> {
             if(!newVal && usernameInp.getText().isEmpty()){
                 usernameInp.setStyle(ERROR_STYLE);
@@ -108,7 +111,12 @@ public class LoginWindowController implements Initializable {
             ServerResponse response = (ServerResponse) packet;
 
             if(response.getCode() == ServerResponse.StatusCode.SUCCESS){
-                Platform.runLater(() -> Launcher.switchToScene("deneme"));
+                User.setUsername(sentUsername);
+
+                Platform.runLater(() -> {
+                    Launcher.STAGE.setTitle("Chat App - "+sentUsername);
+                    Launcher.switchToScene("deneme");
+                });
             } else if(response.getCode() == ServerResponse.StatusCode.FAILURE) {
                 error.setText(response.getText());
                 button.setDisable(false);

@@ -2,8 +2,13 @@ package com.example.demo;
 
 import com.example.demo.network.internal.NetworkHandler;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.TextInputDialog;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -11,6 +16,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.Optional;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -29,10 +35,39 @@ public class Launcher extends Application {
         stage.setResizable(false);
         stage.setTitle("Chat App");
         stage.show();
+        String host;
+        int port;
+
+        TextInputDialog connectionCredentials = new TextInputDialog();
+        connectionCredentials.setResult("localhost:8080");
+        connectionCredentials.setTitle("Chat App - Server Selection");
+        connectionCredentials.setHeaderText("Enter the server you want to connect");
+        connectionCredentials.setContentText("HOST:PORT");
+        connectionCredentials.getDialogPane().getButtonTypes().remove(1);
+        Optional<String> result = connectionCredentials.showAndWait();
+        if (result.isPresent()) {
+            String r = result.get().trim();
+            if (!r.contains(":")) {
+                errorPane("Please enter a valid HOST:PORT url").showAndWait();
+                Platform.exit();
+                return;
+            }
+            try {
+                host = r.split(":")[0];
+                port = Integer.parseInt(r.split(":")[1]);
+            } catch (NumberFormatException | ArrayIndexOutOfBoundsException e){
+                errorPane("Please enter a valid HOST:PORT url").showAndWait();
+                Platform.exit();
+                return;
+            }
+        } else {
+            Platform.exit();
+            return;
+        }
+        NetworkHandler.connect(host, port);
     }
 
     public void run(){
-        NetworkHandler.connect("localhost", 8080);
         launch();
     }
 
@@ -43,5 +78,14 @@ public class Launcher extends Application {
             throw new RuntimeException(e);
         }
         return STAGE;
+    }
+
+    public static Dialog<String> errorPane(String name){
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setTitle("Error");
+        ButtonType type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+        dialog.setContentText(name);
+        dialog.getDialogPane().getButtonTypes().add(type);
+        return dialog;
     }
 }
