@@ -35,11 +35,10 @@ public class Launcher extends Application {
         stage.setResizable(false);
         stage.setTitle("Chat App");
         stage.show();
-        String host;
-        int port;
+        String host = null;
+        int port = 0;
 
         TextInputDialog connectionCredentials = new TextInputDialog();
-        connectionCredentials.setResult("localhost:8080");
         connectionCredentials.setTitle("Chat App - Server Selection");
         connectionCredentials.setHeaderText("Enter the server you want to connect");
         connectionCredentials.setContentText("HOST:PORT");
@@ -61,6 +60,7 @@ public class Launcher extends Application {
                 return;
             }
         } else {
+            errorPane("Please enter a valid HOST:PORT url").showAndWait();
             Platform.exit();
             return;
         }

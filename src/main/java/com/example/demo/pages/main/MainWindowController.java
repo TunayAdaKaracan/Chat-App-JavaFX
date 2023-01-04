@@ -37,7 +37,7 @@ public class MainWindowController implements Initializable{
 
     @FXML
     public void send(ActionEvent e){
-        if(messageArea.getText() != null && !messageArea.getText().isEmpty()){
+        if(messageArea.getText() != null && !messageArea.getText().trim().isEmpty()){
             new MessagePacket()
                     .setUsername(User.getUsername())
                     .setMessageContent(messageArea.getText())
@@ -48,7 +48,7 @@ public class MainWindowController implements Initializable{
 
     @FXML
     public void keyPress(KeyEvent event){
-        if(event.getCode() == KeyCode.ENTER && messageArea.getText() != null && !messageArea.getText().isEmpty()){
+        if(event.getCode() == KeyCode.ENTER && messageArea.getText() != null && !messageArea.getText().trim().isEmpty()){
             new MessagePacket()
                     .setUsername(User.getUsername())
                     .setMessageContent(messageArea.getText())
